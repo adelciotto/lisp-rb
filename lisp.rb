@@ -1,4 +1,3 @@
-require 'bigdecimal'
 require 'readline'
 
 class LispError < StandardError
@@ -65,20 +64,21 @@ def tokenize(program)
 end
 
 def to_numeric(str)
-  num = BigDecimal.new(str)
-  num.frac == 0 ? num.to_i : num.to_f
+  Integer(str)
+rescue ArgumentError
+  Float(str)
 end
 
 def parse_token(token)
   to_numeric(token)
 rescue ArgumentError
   case token
+  when 'nil'
+    nil
   when 'true'
     true
   when 'false'
     false
-  when 'nil'
-    nil
   else
     token
   end
@@ -130,6 +130,8 @@ def evaluate(exp, scope)
     nil 
   elsif exp.is_a? String
     scope.find(exp)[exp]
+  elsif not exp.is_a? Array
+    exp
   elsif is_if?(exp)
     _, test, true_case, false_case = exp
     res = evaluate(test, scope) ? true_case : false_case
@@ -142,16 +144,14 @@ def evaluate(exp, scope)
     Function.new(params, body, scope)
   elsif exp[0] == 'exit'
     exit
-  elsif exp.is_a? Array
+  else
     if exp.length == 1
-      evaluate(exp [0], scope)
+      evaluate(exp[0], scope)
     else
       func = evaluate(exp[0], scope)
       args = exp.drop(1).map { |arg| evaluate(arg, scope) }
       func.(args)
     end
-  else
-    exp
   end
 end
 
