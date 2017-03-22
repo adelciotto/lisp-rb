@@ -49,6 +49,22 @@ class Function
   attr_accessor :params, :body, :scope
 end
 
+def type_table
+  @type_table ||=
+    {
+      list: -> (exp) { exp.is_a? Array },
+      atom: -> (exp) { not exp.is_a? Array },
+      symbol: -> (exp) { exp.is_a? String },
+      define: -> (exp) { exp[0] == 'define' },
+      if: -> (exp) { exp[0] == 'if' },
+      lambda: -> (exp) { exp[0] == 'lambda' }
+    }
+end
+
+def is_of_type?(exp, type)
+  type_table[type].(exp)
+end
+
 def global_scope
   ops = [:+, :-, :*, :/, :>, :>=, :<, :<=, :==, :%, :**]
   ops.inject({}) do |res, op| 
@@ -101,18 +117,6 @@ def parse(tokens)
   end
 end
 
-def is_if?(exp)
-  exp[0] == 'if'
-end
-
-def is_def?(exp)
-  exp[0] == 'def'
-end
-
-def is_lambda?(exp)
-  exp[0] == 'lambda' || exp[0] == '=>'
-end
-
 def enhance(exp, scope)
   if exp.nil?
     nil
@@ -127,24 +131,24 @@ end
 
 def evaluate(exp, scope)
   if exp.nil?
-    nil 
-  elsif exp.is_a? String
+    nil
+  elsif is_of_type?(exp, :symbol)
     scope.find(exp)[exp]
-  elsif not exp.is_a? Array
+  elsif is_of_type?(exp, :atom)
     exp
-  elsif is_if?(exp)
+  elsif is_of_type?(exp, :if)
     _, test, true_case, false_case = exp
     res = evaluate(test, scope) ? true_case : false_case
     evaluate(res, scope)
-  elsif is_def?(exp)
+  elsif is_of_type?(exp, :define)
     _, var, res = exp
     scope[var] = evaluate(res, scope)
-  elsif is_lambda?(exp) 
+  elsif is_of_type?(exp, :lambda)
     _, params, body = exp
     Function.new(params, body, scope)
   elsif exp[0] == 'exit'
     exit
-  else
+  elsif is_of_type?(exp, :list)
     if exp.length == 1
       evaluate(exp[0], scope)
     else
