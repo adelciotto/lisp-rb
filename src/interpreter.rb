@@ -4,7 +4,6 @@ require_relative 'enhancer/enhancer.rb'
 require_relative 'evaluator/evaluator.rb'
 require_relative 'common/constants.rb'
 require_relative 'common/lisp_error.rb'
-require 'pry'
 
 class Interpreter
   include Constants, Tokenizer, Parser, Enhancer, Evaluator

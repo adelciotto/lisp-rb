@@ -14,5 +14,3 @@ It has the following features so far.
 * Lamba expressions via `lambda`.
 * Basic error handling.
 * Scoped variables.
-
-Thanks to Peter Norvigs work on [lispy](http://norvig.com/lispy.html).
