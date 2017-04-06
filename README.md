@@ -1,17 +1,17 @@
 # lisp-rb
 
-![preview](preview.gif)
+![preview](preview.png)
 
 A short and incomplete Lisp repl written in the ruby programming
 language. Only a small custom subset of a typical Lisp has been implemented.
 This is simply a learning experience for myself to gain more insight into both
 the lisp and ruby programming languages.
 
-It has the following features
+It has the following features so far.
 
-* Lamba expressions via `lambda` or `=>`
-* If statements.
-* Variable definition via `def`.
+* `If-else` statements.
+* Variable and function definition via `defvar` and `defun`.
+* Lamba expressions via `lambda`.
 * Basic error handling.
 * Scoped variables.
 
