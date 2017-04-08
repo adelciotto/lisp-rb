@@ -36,7 +36,7 @@ module Parser
       'Setf'
     when 'defun' 
       'Fundef'
-    when 'lamdba' 
+    when 'lambda'
       'Lambda'
     when 'let'
       'Let'
