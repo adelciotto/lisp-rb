@@ -32,6 +32,8 @@ module Parser
       'Predicate'
     when 'defvar' 
       'Vardef'
+    when 'setf'
+      'Setf'
     when 'defun' 
       'Fundef'
     when 'lamdba' 

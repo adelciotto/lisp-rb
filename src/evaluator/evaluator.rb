@@ -32,6 +32,10 @@ module Evaluator
       var_name, var_val = ast.values_at(:var_name, :var_val)
       raise LispError.new("#{var_name} is already defined") unless scope[var_name].nil?
       scope[var_name] = evaluate(var_val, scope)
+    when 'Setf'
+      var_name, var_val = ast.values_at(:var_name, :var_val)
+      raise LispError.new("#{var_name} is not defined") if scope[var_name].nil?
+      scope[var_name] = evaluate(var_val, scope)
     when 'Fundef'
       func_name, params, body = ast.values_at(:func_name, :params, :body)
       scope[func_name] = Function.new(func_name, params, body, scope)

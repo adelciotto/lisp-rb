@@ -22,6 +22,8 @@ module Enhancer
       enhance_predicate(ast)
     when 'Vardef'
       enhance_vardef(ast)
+    when 'Setf'
+      enhance_vardef(ast)
     when 'Fundef'
       enhance_funcdef(ast)
     when 'Lamdba'
