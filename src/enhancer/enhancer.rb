@@ -28,6 +28,8 @@ module Enhancer
       enhance_funcdef(ast)
     when 'Lambda'
       enhance_lambda(ast)
+    when 'Let'
+      enhance_let(ast)
     else
       ast
     end
@@ -47,7 +49,7 @@ module Enhancer
     _, test, true_case, false_case = node[:args]
     node[:test] = enhance(test)
     node[:true_case] = enhance(true_case)
-    node[:false_case] = false_case.nil? ? { type: 'Nil' } : enhance(false_case)
+    node[:false_case] = false_case.nil? ? { type: 'Atom', atom_type: 'Nil' } : enhance(false_case)
 
     node.delete(:args)
     node
@@ -77,6 +79,10 @@ module Enhancer
 
     _, params, body = node[:args]
     enhance_func(node, params, body)
+  end
+
+  def enhance_let(node)
+
   end
 
   def enhance_func(node, params, body)

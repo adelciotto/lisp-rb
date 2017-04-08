@@ -38,6 +38,8 @@ module Parser
       'Fundef'
     when 'lamdba' 
       'Lambda'
+    when 'let'
+      'Let'
     else 
       'Exp'
     end
