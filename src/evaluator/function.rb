@@ -1,11 +1,14 @@
 class Function
-  attr_accessor :params, :body, :scope
+  attr_accessor :name, :params, :body, :scope
 
-  def initialize(params, body, scope)
+  def initialize(name, params, body, scope)
+    @name = name
     @params = params
     @body = body
     @scope = scope
   end
 
-  # TODO: to_string overload
+  def to_s
+    "Function: #{name}"
+  end
 end

@@ -25,6 +25,8 @@ module Parser
     end
     tokens.shift
 
+    return to_atom('Nil') if list.empty?
+
     type = case list[0][:val]
     when 'if' 
       'Predicate'

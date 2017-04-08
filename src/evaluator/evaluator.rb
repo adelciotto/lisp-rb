@@ -30,10 +30,11 @@ module Evaluator
       evaluate(test, scope) ? evaluate(true_case, scope) : evaluate(false_case, scope)
     when 'Vardef'
       var_name, var_val = ast.values_at(:var_name, :var_val)
+      raise LispError.new("#{var_name} is already defined") unless scope[var_name].nil?
       scope[var_name] = evaluate(var_val, scope)
     when 'Fundef'
       func_name, params, body = ast.values_at(:func_name, :params, :body)
-      scope[func_name] = Function.new(params, body, scope)
+      scope[func_name] = Function.new(func_name, params, body, scope)
     when 'lambda'
       ast
     end
@@ -48,6 +49,8 @@ module Evaluator
   def evaluate_func(ast, scope)
     func = evaluate(ast[:val], scope)
     args = evaluate_args(ast[:args], scope)
+
+    raise LispError.new("#{ast[:val][:val]} is not a function") unless func.is_a?(Function)
     evaluate(func.body, Scope.new(func.params, args, func.scope))
   end
 

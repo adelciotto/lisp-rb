@@ -1,5 +1,6 @@
 require 'readline'
 require_relative 'interpreter.rb'
+require_relative 'common/colorize.rb'
 
 module Lisp
   PROMPT_TEXT = '>>> '
@@ -16,7 +17,8 @@ module Lisp
         
         next if input.empty?
         result = interpreter.eval_expression(input)
-        puts "#{EVAL_TEXT}#{result}" unless result.nil?
+        puts
+        puts "#{EVAL_TEXT}#{result}".green unless result.nil?
       end
     rescue Interrupt
       puts 'Goodbye.'
