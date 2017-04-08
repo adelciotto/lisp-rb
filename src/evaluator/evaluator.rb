@@ -42,6 +42,11 @@ module Evaluator
     when 'Lambda'
       params, body = ast.values_at(:params, :body)
       Function.new('lambda', params, body, scope)
+    when 'Let'
+      var_bindings, body = ast.values_at(:var_bindings, :body)
+      params = var_bindings.map { |var_binding| var_binding[:var_name] }
+      args = var_bindings.map { |var_binding| evaluate(var_binding[:var_val], scope) }
+      evaluate(body, Scope.new(params: params, args: args, outer: scope))
     end
   end
 

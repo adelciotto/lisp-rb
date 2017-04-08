@@ -82,7 +82,18 @@ module Enhancer
   end
 
   def enhance_let(node)
+    assert_args(node[:args].length < 3, 'Incomplete let statement')
 
+    _, arg_exp, body = node[:args]
+    node[:var_bindings] = arg_exp[:args].map do |sexp|
+      args = sexp[:args]
+      assert_args(args.length != 2, "Let variable #{args[0][:val]} has no value")
+      { var_name: args[0], var_val: args[1] }
+    end
+    node[:body] = enhance(body)
+
+    node.delete(:args)
+    node
   end
 
   def enhance_func(node, params, body)

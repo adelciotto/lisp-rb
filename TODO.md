@@ -5,7 +5,8 @@
 - [x] Override to string of the function class
 - [x] Implement the setf function
 - [x] Implement lambda statements
-- [ ] Implement let statements
+- [x] Implement let statements
+- [ ] More robust error handling (check when things should be symbols etc).
 - [ ] Improve the parsing
 - [ ] Implement support for strings.
 - [ ] Implement the List data structure.

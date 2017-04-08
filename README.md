@@ -13,5 +13,6 @@ It has the following features so far.
 * Variable and function definition via `defvar` and `defun`.
 * Variable and function mutation by `setf`.
 * Lamba expressions via `lambda`.
+* `Let` statements for lexical scoping.
 * Basic error handling.
 * Scoped variables.
