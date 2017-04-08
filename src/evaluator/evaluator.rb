@@ -39,8 +39,9 @@ module Evaluator
     when 'Fundef'
       func_name, params, body = ast.values_at(:func_name, :params, :body)
       scope[func_name] = Function.new(func_name, params, body, scope)
-    when 'lambda'
-      ast
+    when 'Lambda'
+      params, body = ast.values_at(:params, :body)
+      Function.new('lambda', params, body, scope)
     end
   end
 
@@ -55,7 +56,7 @@ module Evaluator
     args = evaluate_args(ast[:args], scope)
 
     raise LispError.new("#{ast[:val][:val]} is not a function") unless func.is_a?(Function)
-    evaluate(func.body, Scope.new(func.params, args, func.scope))
+    evaluate(func.body, Scope.new(params: func.params, args: args, outer: func.scope))
   end
 
   def evaluate_args(args, scope)

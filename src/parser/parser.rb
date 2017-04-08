@@ -37,7 +37,7 @@ module Parser
     when 'defun' 
       'Fundef'
     when 'lamdba' 
-      'Lamdba'
+      'Lambda'
     else 
       'Exp'
     end

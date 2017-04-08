@@ -1,7 +1,7 @@
 require_relative '../common/lisp_error.rb'
 
 class Scope
-  def initialize(params=[], args=[], outer=nil, initial: {})
+  def initialize(params: [], args: [], outer: nil, initial: {})
     param_values = params.map { |param| param[:val] }
     @data = initial.merge(Hash[param_values.zip(args)])
     @outer = outer

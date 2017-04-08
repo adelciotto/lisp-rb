@@ -26,7 +26,8 @@ module Enhancer
       enhance_vardef(ast)
     when 'Fundef'
       enhance_funcdef(ast)
-    when 'Lamdba'
+    when 'Lambda'
+      enhance_lambda(ast)
     else
       ast
     end
@@ -68,7 +69,18 @@ module Enhancer
 
     _, func_name, params, body = node[:args]
     node[:func_name] = func_name[:val]
-    node[:params] = params[:args]
+    enhance_func(node, params, body)
+  end
+
+  def enhance_lambda(node)
+    assert_args(node[:args].length < 2, 'Incorrect lamdba definition')
+
+    _, params, body = node[:args]
+    enhance_func(node, params, body)
+  end
+
+  def enhance_func(node, params, body)
+    node[:params] = params[:args] || []
     node[:body] = enhance(body)
 
     node.delete(:args)

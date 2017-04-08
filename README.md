@@ -11,6 +11,7 @@ It has the following features so far.
 
 * `If-else` statements.
 * Variable and function definition via `defvar` and `defun`.
+* Variable and function mutation by `setf`.
 * Lamba expressions via `lambda`.
 * Basic error handling.
 * Scoped variables.

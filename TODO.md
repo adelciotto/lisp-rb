@@ -4,7 +4,7 @@
 - [x] Color errors red
 - [x] Override to string of the function class
 - [x] Implement the setf function
-- [ ] Implement lambda statements
+- [x] Implement lambda statements
 - [ ] Implement let statements
 - [ ] Improve the parsing
 - [ ] Implement support for strings.
