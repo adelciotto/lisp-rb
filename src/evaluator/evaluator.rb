@@ -23,8 +23,8 @@ module Evaluator
     case ast[:sexp_type]
     when 'Exp'
       evaluate_func(ast, scope)
-    when 'Binaryop'
-      evaluate_binaryop(ast, scope)
+    when 'Builtin'
+      evaluate_builtin(ast, scope)
     when 'Predicate'
       test, true_case, false_case = ast.values_at(:test, :true_case, :false_case)
       evaluate(test, scope) ? evaluate(true_case, scope) : evaluate(false_case, scope)
@@ -50,9 +50,10 @@ module Evaluator
     end
   end
 
-  def evaluate_binaryop(ast, scope)
+  def evaluate_builtin(ast, scope)
     func = evaluate(ast[:val], scope)
     args = evaluate_args(ast[:args], scope)
+
     func.(args)
   end
 
@@ -60,7 +61,12 @@ module Evaluator
     func = evaluate(ast[:val], scope)
     args = evaluate_args(ast[:args], scope)
 
-    raise LispError.new("#{ast[:val][:val]} is not a function") unless func.is_a?(Function)
+    raise LispError.new("\"#{func.name}\" is not a function") unless func.is_a?(Function)
+    raise LispError.new(
+      "Incorrect number of arguments supplied to function \"#{func.name}\"\n"\
+      "Expected #{func.params.length}, but receieved #{args.length}"
+    ) unless func.params.length == args.length
+
     evaluate(func.body, Scope.new(params: func.params, args: args, outer: func.scope))
   end
 

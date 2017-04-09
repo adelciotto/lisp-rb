@@ -4,7 +4,7 @@ require_relative 'common/colorize.rb'
 
 module Lisp
   PROMPT_TEXT = '>>> '
-  EVAL_TEXT = ' => '
+  EVAL_TEXT = '== '
   private_constant :PROMPT_TEXT, :EVAL_TEXT
 
   def Lisp.repl
@@ -17,11 +17,10 @@ module Lisp
         
         next if input.empty?
         result = interpreter.eval_expression(input)
-        puts
         puts "#{EVAL_TEXT}#{result}".green unless result.nil?
       end
     rescue Interrupt
-      puts 'Goodbye.'
+      puts 'Goodbye.'.green
       exit
     end
   end

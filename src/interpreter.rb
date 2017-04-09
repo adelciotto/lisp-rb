@@ -11,21 +11,26 @@ class Interpreter
   def eval_expression(exp)
     tokens = tokenize(exp)
     ast = enhance(parse(tokens))
-    evaluate(ast, scope)
+    evaluate(ast, global_scope)
   rescue LispError => e
     puts e
   end
 
   private
 
-  def scope
-    @scope ||= Scope.new(initial: global_scope)
+  def global_scope
+    @global_scope ||= Scope.new(initial: operators.merge(functions))
   end
 
-  def global_scope
-    @global_scope ||= OPERATORS.inject({}) do |res, (key, val)| 
+  def operators
+    OPERATORS.inject({}) do |res, (key, val)| 
       res.merge({ key => -> (args) { args.reduce(val) } })
     end
   end
 
+  def functions
+    FUNCTIONS.inject({}) do |res, (key, val)|
+      res.merge({ key => val })
+    end
+  end
 end

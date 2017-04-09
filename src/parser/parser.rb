@@ -40,6 +40,8 @@ module Parser
       'Lambda'
     when 'let'
       'Let'
+    when 'list'
+      'List'
     else 
       'Exp'
     end

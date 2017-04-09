@@ -10,8 +10,12 @@ module Constants
     '<'   => :< ,
     '=='  => :==, 
     '%'   => :%,
-    '**'  => :**,
-    'and' => :and,
-    'or'  => :or
+    '**'  => :**
+  }
+
+  FUNCTIONS = {
+    'exit' => -> (args) { raise Interrupt.new },
+    'and' => -> (args) { args.all? },
+    'or' => -> (args) { args.any? }
   }
 end

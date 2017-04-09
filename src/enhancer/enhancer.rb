@@ -38,7 +38,7 @@ module Enhancer
   def enhance_regular(node)
     assert_args(node[:args].empty?, 'No arguments for expression')
 
-    node[:sexp_type] = 'Binaryop' unless OPERATORS[node[:val][:val]].nil?
+    node[:sexp_type] = 'Builtin' if is_builtin?(node[:val][:val])
     node[:args] = node[:args].drop(1).map { |arg| enhance(arg) }
     node
   end
@@ -104,6 +104,10 @@ module Enhancer
 
     node.delete(:args)
     node
+  end
+
+  def is_builtin?(symbol)
+    OPERATORS[symbol] || FUNCTIONS[symbol]
   end
 
   def assert_vardef(args, assert_len, var_name)
