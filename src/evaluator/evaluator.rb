@@ -1,8 +1,11 @@
 require_relative '../common/lisp_error.rb'
+require_relative '../common/constants.rb'
 require_relative 'scope.rb'
 require_relative 'function.rb'
 
 module Evaluator
+  include Constants
+
   def evaluate(ast, scope)
     case ast[:type]
     when 'Symbol'
@@ -17,7 +20,23 @@ module Evaluator
     end
   end
 
+  def global_scope
+    @global_scope ||= Scope.new(initial: operators.merge(functions))
+  end
+
   private
+
+  def operators
+    @operators ||= OPERATORS.inject({}) do |res, (key, val)| 
+      res.merge({ key => -> (args) { args.reduce(val) } })
+    end
+  end
+
+  def functions
+    @functions ||= FUNCTIONS.inject({}) do |res, (key, val)|
+      res.merge({ key => val })
+    end
+  end
 
   def evaluate_sexp(ast, scope)
     case ast[:sexp_type]
@@ -31,14 +50,15 @@ module Evaluator
     when 'Vardef'
       var_name, var_val = ast.values_at(:var_name, :var_val)
       raise LispError.new("#{var_name} is already defined") unless scope[var_name].nil?
-      scope[var_name] = evaluate(var_val, scope)
+      global_scope[var_name] = evaluate(var_val, scope)
+      var_name
     when 'Setf'
       var_name, var_val = ast.values_at(:var_name, :var_val)
       raise LispError.new("#{var_name} is not defined") if scope[var_name].nil?
-      scope[var_name] = evaluate(var_val, scope)
+      global_scope[var_name] = evaluate(var_val, scope)
     when 'Fundef'
       func_name, params, body = ast.values_at(:func_name, :params, :body)
-      scope[func_name] = Function.new(func_name, params, body, scope)
+      global_scope[func_name] = Function.new(func_name, params, body, scope)
     when 'Lambda'
       params, body = ast.values_at(:params, :body)
       Function.new('lambda', params, body, scope)

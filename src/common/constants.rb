@@ -14,7 +14,7 @@ module Constants
   }
 
   FUNCTIONS = {
-    'exit' => -> (args) { raise Interrupt.new },
+    'exit' => -> (_) { raise Interrupt.new },
     'and' => -> (args) { args.all? },
     'or' => -> (args) { args.any? }
   }
