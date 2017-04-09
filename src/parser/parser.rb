@@ -40,6 +40,8 @@ module Parser
       'Lambda'
     when 'let'
       'Let'
+    when 'flet'
+      'Flet'
     when 'list'
       'List'
     else 

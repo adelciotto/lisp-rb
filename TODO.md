@@ -8,8 +8,9 @@
 - [x] Implement let statements
 - [x] More robust error handling (check when things should be symbols etc).
 - [x] Split evaluate_sexp into seperate functions
-- [ ] Implement letf statements
+- [x] Implement letf statements
 - [ ] Implement command history
+- [ ] Cleanup enhancer
 - [ ] Implement support for multiline entrys
 - [ ] Implement the List data structure.
 - [ ] Implement the quote function.

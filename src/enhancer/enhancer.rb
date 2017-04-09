@@ -30,6 +30,8 @@ module Enhancer
       enhance_lambda(ast)
     when 'Let'
       enhance_let(ast)
+    when 'Flet'
+      enhance_flet(ast)
     else
       ast
     end
@@ -67,10 +69,11 @@ module Enhancer
   end
 
   def enhance_funcdef(node)
-    assert_args(node[:args].length < 3, 'Invalid function definition')
+    args = node[:args]
+    _, func_name, params, body = args
+    assert_funcdef(args, 4, func_name)
 
-    _, func_name, params, body = node[:args]
-    node[:func_name] = func_name[:val]
+    node[:name] = func_name[:val]
     enhance_func(node, params, body)
   end
 
@@ -85,12 +88,30 @@ module Enhancer
     assert_args(node[:args].length < 3, 'Incomplete let statement')
 
     _, arg_exp, body = node[:args]
-    node[:var_bindings] = arg_exp[:args].map do |sexp|
+    node[:vars] = arg_exp[:args].map do |sexp|
       args = sexp[:args]
       var_name, var_val = args
       assert_vardef(args, 2, var_name)
 
-      { var_name: var_name, var_val: var_val }
+      { name: var_name, val: var_val }
+    end
+    node[:body] = enhance(body)
+
+    node.delete(:args)
+    node
+  end
+
+  def enhance_flet(node)
+    assert_args(node[:args].length < 3, 'Incomplete flet statement')
+
+    _, arg_exp, body = node[:args]
+    node[:funcs] = arg_exp[:args].map do |sexp|
+      args = sexp[:args]
+      func_name, params, func_body = args
+      assert_funcdef(args, 3, func_name)
+
+      res = { type: 'Sexp', sexp_type: 'Fundef', name: func_name }
+      enhance_func(res, params, func_body)
     end
     node[:body] = enhance(body)
 
@@ -113,6 +134,11 @@ module Enhancer
   def assert_vardef(args, assert_len, var_name)
     assert_args(args.length != assert_len, "Variable definition \"#{var_name[:val]}\" has no value")
     assert_args(var_name[:type] == 'Atom', 'Invalid variable name')
+  end
+
+  def assert_funcdef(args, assert_len, func_name)
+    assert_args(args.length != assert_len, "Function definition \"#{func_name[:val]}\" has no value")
+    assert_args(func_name[:type] == 'Atom', 'Invalid function name')
   end
 
   def assert_args(condition, msg)

@@ -56,6 +56,8 @@ module Evaluator
       evaluate_lambda(ast, scope)
     when 'Let'
       evaluate_let(ast, scope)
+    when 'Flet'
+      evaluate_flet(ast, scope)
     end
   end
 
@@ -99,8 +101,8 @@ module Evaluator
   end
 
   def evaluate_fundef(ast, scope)
-    func_name, params, body = ast.values_at(:func_name, :params, :body)
-    global_scope[func_name] = Function.new(func_name, params, body, scope)
+    name, params, body = ast.values_at(:name, :params, :body)
+    global_scope[name] = Function.new(name, params, body, scope)
   end
 
   def evaluate_lambda(ast, scope)
@@ -109,10 +111,18 @@ module Evaluator
   end
 
   def evaluate_let(ast, scope)
-    var_bindings, body = ast.values_at(:var_bindings, :body)
+    vars, body = ast.values_at(:vars, :body)
 
-    params = var_bindings.map { |var_binding| var_binding[:var_name] }
-    args = var_bindings.map { |var_binding| evaluate(var_binding[:var_val], scope) }
+    params = vars.map { |var| var[:name] }
+    args = vars.map { |var| evaluate(var[:val], scope) }
+    evaluate(body, Scope.new(params: params, args: args, outer: scope))
+  end
+
+  def evaluate_flet(ast, scope)
+    funcs, body = ast.values_at(:funcs, :body)
+
+    params = funcs.map { |func| func[:name] }
+    args = funcs.map { |func| evaluate(func, scope) }
     evaluate(body, Scope.new(params: params, args: args, outer: scope))
   end
 
