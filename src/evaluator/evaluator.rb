@@ -45,28 +45,17 @@ module Evaluator
     when 'Builtin'
       evaluate_builtin(ast, scope)
     when 'Predicate'
-      test, true_case, false_case = ast.values_at(:test, :true_case, :false_case)
-      evaluate(test, scope) ? evaluate(true_case, scope) : evaluate(false_case, scope)
+      evaluate_predicate(ast, scope)
     when 'Vardef'
-      var_name, var_val = ast.values_at(:var_name, :var_val)
-      raise LispError.new("#{var_name} is already defined") unless scope[var_name].nil?
-      global_scope[var_name] = evaluate(var_val, scope)
-      var_name
+      evaluate_vardef(ast, scope)
     when 'Setf'
-      var_name, var_val = ast.values_at(:var_name, :var_val)
-      raise LispError.new("#{var_name} is not defined") if scope[var_name].nil?
-      global_scope[var_name] = evaluate(var_val, scope)
+      evaluate_setf(ast, scope)
     when 'Fundef'
-      func_name, params, body = ast.values_at(:func_name, :params, :body)
-      global_scope[func_name] = Function.new(func_name, params, body, scope)
+      evaluate_fundef(ast, scope)
     when 'Lambda'
-      params, body = ast.values_at(:params, :body)
-      Function.new('lambda', params, body, scope)
+      evaluate_lambda(ast, scope)
     when 'Let'
-      var_bindings, body = ast.values_at(:var_bindings, :body)
-      params = var_bindings.map { |var_binding| var_binding[:var_name] }
-      args = var_bindings.map { |var_binding| evaluate(var_binding[:var_val], scope) }
-      evaluate(body, Scope.new(params: params, args: args, outer: scope))
+      evaluate_let(ast, scope)
     end
   end
 
@@ -88,6 +77,43 @@ module Evaluator
     ) unless func.params.length == args.length
 
     evaluate(func.body, Scope.new(params: func.params, args: args, outer: func.scope))
+  end
+
+  def evaluate_predicate(ast, scope)
+    test, true_case, false_case = ast.values_at(:test, :true_case, :false_case)
+    evaluate(test, scope) ? evaluate(true_case, scope) : evaluate(false_case, scope)
+  end
+
+  def evaluate_vardef(ast, scope)
+    var_name, var_val = ast.values_at(:var_name, :var_val)
+    raise LispError.new("#{var_name} is already defined") unless scope[var_name].nil?
+
+    global_scope[var_name] = evaluate(var_val, scope)
+    var_name
+  end
+
+  def evaluate_setf(ast, scope)
+    var_name, var_val = ast.values_at(:var_name, :var_val)
+    raise LispError.new("#{var_name} is not defined") if scope[var_name].nil?
+    global_scope[var_name] = evaluate(var_val, scope)
+  end
+
+  def evaluate_fundef(ast, scope)
+    func_name, params, body = ast.values_at(:func_name, :params, :body)
+    global_scope[func_name] = Function.new(func_name, params, body, scope)
+  end
+
+  def evaluate_lambda(ast, scope)
+    params, body = ast.values_at(:params, :body)
+    Function.new('lambda', params, body, scope)
+  end
+
+  def evaluate_let(ast, scope)
+    var_bindings, body = ast.values_at(:var_bindings, :body)
+
+    params = var_bindings.map { |var_binding| var_binding[:var_name] }
+    args = var_bindings.map { |var_binding| evaluate(var_binding[:var_val], scope) }
+    evaluate(body, Scope.new(params: params, args: args, outer: scope))
   end
 
   def evaluate_args(args, scope)

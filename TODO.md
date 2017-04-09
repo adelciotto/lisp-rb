@@ -7,6 +7,10 @@
 - [x] Implement lambda statements
 - [x] Implement let statements
 - [x] More robust error handling (check when things should be symbols etc).
+- [x] Split evaluate_sexp into seperate functions
+- [ ] Implement letf statements
+- [ ] Implement command history
+- [ ] Implement support for multiline entrys
 - [ ] Implement the List data structure.
 - [ ] Implement the quote function.
 - [ ] Improve the parsing
