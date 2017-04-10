@@ -40,23 +40,23 @@ module Evaluator
 
   def evaluate_sexp(ast, scope)
     case ast[:sexp_type]
-    when 'Exp'
+    when SEXP_TYPES[:default]
       evaluate_func(ast, scope)
-    when 'Builtin'
+    when SEXP_TYPES[:builtin]
       evaluate_builtin(ast, scope)
-    when 'Predicate'
+    when SEXP_TYPES[:predicate]
       evaluate_predicate(ast, scope)
-    when 'Vardef'
+    when SEXP_TYPES[:var_def]
       evaluate_vardef(ast, scope)
-    when 'Setf'
+    when SEXP_TYPES[:var_set]
       evaluate_setf(ast, scope)
-    when 'Fundef'
+    when SEXP_TYPES[:func_def]
       evaluate_fundef(ast, scope)
-    when 'Lambda'
+    when SEXP_TYPES[:lambda]
       evaluate_lambda(ast, scope)
-    when 'Let'
+    when SEXP_TYPES[:var_let]
       evaluate_let(ast, scope)
-    when 'Flet'
+    when SEXP_TYPES[:func_let]
       evaluate_flet(ast, scope)
     end
   end

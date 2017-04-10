@@ -10,6 +10,8 @@
 - [x] Split evaluate_sexp into seperate functions
 - [x] Implement letf statements
 - [x] Implement simple command history
+- [x] Move magic strings into constants.rb
+- [ ] Objectize Atom and SExp
 - [ ] Cleanup enhancer
 - [ ] Implement support for multiline entrys
 - [ ] Implement the List data structure.

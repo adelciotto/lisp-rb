@@ -1,6 +1,19 @@
 require_relative '../common/lisp_error.rb'
+require_relative '../common/constants.rb'
 
 module Parser
+  include Constants
+
+  SEXP_TOKENS_MAP = {
+    'if' => SEXP_TYPES[:predicate],
+    'defvar' => SEXP_TYPES[:var_def],
+    'setf' => SEXP_TYPES[:var_set],
+    'defun' => SEXP_TYPES[:func_def],
+    'lambda' => SEXP_TYPES[:lambda],
+    'let' => SEXP_TYPES[:var_let],
+    'flet' => SEXP_TYPES[:func_let]
+  }
+
   def parse(tokens)
     raise LispError.new('Unexpected EOF') if tokens.empty?
 
@@ -25,29 +38,9 @@ module Parser
     end
     tokens.shift
 
-    return to_atom('Nil') if list.empty?
+    return to_atom(ATOM_TYPES[:nil]) if list.empty?
 
-    type = case list[0][:val]
-    when 'if' 
-      'Predicate'
-    when 'defvar' 
-      'Vardef'
-    when 'setf'
-      'Setf'
-    when 'defun' 
-      'Fundef'
-    when 'lambda'
-      'Lambda'
-    when 'let'
-      'Let'
-    when 'flet'
-      'Flet'
-    when 'list'
-      'List'
-    else 
-      'Exp'
-    end
-
+    type = SEXP_TOKENS_MAP[list[0][:val]] || SEXP_TYPES[:default]
     res = { type: 'Sexp', sexp_type: type, args: list }
     res[:val] = list[0] if type == 'Exp'
     res 
@@ -58,13 +51,13 @@ module Parser
   rescue ArgumentError
     case token
     when 'true'
-      to_atom('Boolean', true)
+      to_atom(ATOM_TYPES[:boolean], true)
     when 'false'
-      to_atom('Boolean', false)
+      to_atom(ATOM_TYPES[:boolean], false)
     when 'nil'
-      to_atom('Nil')
+      to_atom(ATOM_TYPES[:nil])
     else 
-      { type: 'Symbol', val: token }
+      { type: ATOM_TYPES[:symbol], val: token }
     end
   end
 
@@ -75,11 +68,11 @@ module Parser
   end
 
   def parse_integer(token)
-    to_atom('Integer', Integer(token))
+    to_atom(ATOM_TYPES[:integer], Integer(token))
   end
 
   def parse_float(token)
-    to_atom('Float', Float(token))
+    to_atom(ATOM_TYPES[:float], Float(token))
   end
 
   def to_atom(atom_type, val = nil)

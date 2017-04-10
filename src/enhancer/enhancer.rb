@@ -16,21 +16,21 @@ module Enhancer
 
   def enhance_sexp(ast)
     case ast[:sexp_type]
-    when 'Exp'
+    when SEXP_TYPES[:default]
       enhance_regular(ast)
-    when 'Predicate'
+    when SEXP_TYPES[:predicate]
       enhance_predicate(ast)
-    when 'Vardef'
+    when SEXP_TYPES[:var_def]
       enhance_vardef(ast)
-    when 'Setf'
+    when SEXP_TYPES[:var_set]
       enhance_vardef(ast)
-    when 'Fundef'
+    when SEXP_TYPES[:func_def]
       enhance_funcdef(ast)
-    when 'Lambda'
+    when SEXP_TYPES[:lambda]
       enhance_lambda(ast)
-    when 'Let'
+    when SEXP_TYPES[:var_let]
       enhance_let(ast)
-    when 'Flet'
+    when SEXP_TYPES[:func_let]
       enhance_flet(ast)
     else
       ast
@@ -40,7 +40,7 @@ module Enhancer
   def enhance_regular(node)
     assert_args(node[:args].empty?, 'No arguments for expression')
 
-    node[:sexp_type] = 'Builtin' if is_builtin?(node[:val][:val])
+    node[:sexp_type] = SEXP_TYPES[:builtin] if is_builtin?(node[:val][:val])
     node[:args] = node[:args].drop(1).map { |arg| enhance(arg) }
     node
   end
