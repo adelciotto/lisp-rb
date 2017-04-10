@@ -51,7 +51,7 @@ module Enhancer
     _, test, true_case, false_case = node[:args]
     node[:test] = enhance(test)
     node[:true_case] = enhance(true_case)
-    node[:false_case] = false_case.nil? ? { type: 'Atom', atom_type: 'Nil' } : enhance(false_case)
+    node[:false_case] = false_case.nil? ? { type: 'Atom', atom_type: ATOM_TYPE[:nil] } : enhance(false_case)
 
     node.delete(:args)
     node
@@ -110,7 +110,7 @@ module Enhancer
       func_name, params, func_body = args
       assert_funcdef(args, 3, func_name)
 
-      res = { type: 'Sexp', sexp_type: 'Fundef', name: func_name }
+      res = { type: 'Sexp', sexp_type: SEXP_TYPES[:func_def], name: func_name }
       enhance_func(res, params, func_body)
     end
     node[:body] = enhance(body)

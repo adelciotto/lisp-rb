@@ -7,6 +7,7 @@ module Evaluator
   include Constants
 
   def evaluate(ast, scope)
+    # TODO: Encapsulate Atom and SExp in classes.
     case ast[:type]
     when 'Symbol'
       val = ast[:val]

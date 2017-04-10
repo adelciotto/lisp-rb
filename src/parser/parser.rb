@@ -42,7 +42,7 @@ module Parser
 
     type = SEXP_TOKENS_MAP[list[0][:val]] || SEXP_TYPES[:default]
     res = { type: 'Sexp', sexp_type: type, args: list }
-    res[:val] = list[0] if type == 'Exp'
+    res[:val] = list[0] if type == SEXP_TYPES[:default]
     res 
   end
 
@@ -57,7 +57,7 @@ module Parser
     when 'nil'
       to_atom(ATOM_TYPES[:nil])
     else 
-      { type: ATOM_TYPES[:symbol], val: token }
+      { type: 'Symbol', val: token }
     end
   end
 

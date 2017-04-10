@@ -21,8 +21,7 @@ module Constants
     integer: 'Integer',
     float: 'Float',
     boolean: 'Boolean',
-    nil: 'Nil',
-    symbol: 'Symbol'
+    nil: 'Nil'
   }
   SEXP_TYPES = {
     default: 'Exp',
