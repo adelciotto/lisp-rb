@@ -1,12 +1,13 @@
 require_relative '../common/constants.rb'
 require_relative '../common/lisp_error.rb'
 require_relative '../types/atom.rb'
+require_relative '../types/lisp_symbol.rb'
 
 module Enhancer
   include Constants
 
   def enhance(ast)
-    if ast.is_a?(Atom)
+    if ast.is_a?(Atom) || ast.is_a?(LispSymbol)
       ast
     else
       enhance_sexp(ast)
@@ -41,7 +42,7 @@ module Enhancer
   def enhance_regular(node)
     assert_args(node[:args].empty?, 'No arguments for expression')
 
-    node[:sexp_type] = SEXP_TYPES[:builtin] if is_builtin?(node[:value][:value])
+    node[:sexp_type] = SEXP_TYPES[:builtin] if is_builtin?(node[:value].value)
     node[:args] = node[:args].drop(1).map { |arg| enhance(arg) }
     node
   end
@@ -63,7 +64,7 @@ module Enhancer
     _, var_name, var_val = args
     assert_vardef(args, 3, var_name)
 
-    node[:var_name] = var_name[:value]
+    node[:var_name] = var_name.value
     node[:var_val] = enhance(var_val)
     node.delete(:args)
     node
@@ -74,7 +75,7 @@ module Enhancer
     _, func_name, params, body = args
     assert_funcdef(args, 4, func_name)
 
-    node[:name] = func_name[:value]
+    node[:name] = func_name.value
     enhance_func(node, params, body)
   end
 
@@ -121,9 +122,14 @@ module Enhancer
   end
 
   def enhance_func(node, params, body)
-    node[:params] = params[:args] || []
-    node[:body] = enhance(body)
+    # TODO: Make this nicer once expressions are encapsulated in class.
+    node[:params] = if params.is_a?(Atom) && params.type == :nil
+      []
+    else
+      params[:args] || []
+    end
 
+    node[:body] = enhance(body)
     node.delete(:args)
     node
   end
@@ -133,13 +139,13 @@ module Enhancer
   end
 
   def assert_vardef(args, assert_len, var_name)
-    assert_args(args.length != assert_len, "Variable definition \"#{var_name[:value]}\" has no value")
-    assert_args(var_name[:type] == 'Atom', 'Invalid variable name')
+    assert_args(args.length != assert_len, "Variable definition \"#{var_name.value}\" has no value")
+    assert_args(var_name.is_a?(Atom), 'Invalid variable name')
   end
 
   def assert_funcdef(args, assert_len, func_name)
-    assert_args(args.length != assert_len, "Function definition \"#{func_name[:value]}\" has no value")
-    assert_args(func_name[:type] == 'Atom', 'Invalid function name')
+    assert_args(args.length != assert_len, "Function definition \"#{func_name.value}\" has no value")
+    assert_args(func_name.is_a?(Atom), 'Invalid function name')
   end
 
   def assert_args(condition, msg)

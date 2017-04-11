@@ -1,6 +1,8 @@
-require_relative 'type.rb'
+require_relative 'lisp_symbol.rb'
 
-class Atom < Type
+class Atom < LispSymbol
+  attr_accessor :type
+
   ATOM_TYPES = {
     integer: 'Integer',
     float: 'Float',
@@ -9,7 +11,8 @@ class Atom < Type
   }
 
   def initialize(type, value = nil)
-    super(type, value: value)
+    super(value)
+    @type = type
   end
 
   def to_s

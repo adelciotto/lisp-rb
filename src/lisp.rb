@@ -1,7 +1,6 @@
 require 'readline'
 require_relative 'interpreter.rb'
 require_relative 'common/colorize.rb'
-require 'pry'
 
 module Lisp
   PROMPT_TEXT = '>>> '

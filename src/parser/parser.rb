@@ -1,6 +1,7 @@
 require_relative '../common/lisp_error.rb'
 require_relative '../common/constants.rb'
 require_relative '../types/atom.rb'
+require_relative '../types/lisp_symbol.rb'
 
 module Parser
   include Constants
@@ -41,10 +42,19 @@ module Parser
 
     return Atom.new(:nil) if list.empty?
 
-    type = SEXP_TOKENS_MAP[list[0][:value]] || SEXP_TYPES[:default]
+    # TODO: Ughh, make this nicer once expressions are encapsulated in class.
+    type = sexp_type(list[0]) || SEXP_TYPES[:default]
     res = { type: 'Sexp', sexp_type: type, args: list }
     res[:value] = list[0] if type == SEXP_TYPES[:default]
     res 
+  end
+
+  def sexp_type(symbol)
+    if symbol.is_a?(LispSymbol)
+      SEXP_TOKENS_MAP[symbol.value]
+    else
+      SEXP_TOKENS_MAP[symbol[:value]]
+    end
   end
 
   def parse_atom(token)
@@ -58,7 +68,7 @@ module Parser
     when 'nil'
       Atom.new(:nil)
     else 
-      { type: 'Symbol', value: token }
+      LispSymbol.new(token)
     end
   end
 

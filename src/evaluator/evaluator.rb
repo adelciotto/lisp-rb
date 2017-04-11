@@ -1,6 +1,7 @@
 require_relative '../common/lisp_error.rb'
 require_relative '../common/constants.rb'
 require_relative '../types/atom.rb'
+require_relative '../types/lisp_symbol.rb'
 require_relative 'scope.rb'
 require_relative 'function.rb'
 
@@ -11,8 +12,8 @@ module Evaluator
     # TODO: Encapsulate Atom and SExp in classes.
     if ast.is_a?(Atom)
       ast.value
-    elsif ast[:type] == 'Symbol'
-      val = ast[:value]
+    elsif ast.is_a?(LispSymbol)
+      val = ast.value
       scope.find(val)[val]
     elsif ast[:type] == 'Sexp'
       evaluate_sexp(ast, scope)
