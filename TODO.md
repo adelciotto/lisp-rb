@@ -11,7 +11,9 @@
 - [x] Implement letf statements
 - [x] Implement simple command history
 - [x] Move magic strings into constants.rb
-- [ ] Objectize Atom and SExp
+- [x] Objectize Atom
+- [x] Objectize Symbol
+- [ ] Objectize Expression
 - [ ] Cleanup enhancer
 - [ ] Implement support for multiline entrys
 - [ ] Implement the List data structure.

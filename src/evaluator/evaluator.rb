@@ -1,5 +1,6 @@
 require_relative '../common/lisp_error.rb'
 require_relative '../common/constants.rb'
+require_relative '../types/atom.rb'
 require_relative 'scope.rb'
 require_relative 'function.rb'
 
@@ -8,13 +9,12 @@ module Evaluator
 
   def evaluate(ast, scope)
     # TODO: Encapsulate Atom and SExp in classes.
-    case ast[:type]
-    when 'Symbol'
-      val = ast[:val]
+    if ast.is_a?(Atom)
+      ast.value
+    elsif ast[:type] == 'Symbol'
+      val = ast[:value]
       scope.find(val)[val]
-    when 'Atom'
-      ast[:val]
-    when 'Sexp'
+    elsif ast[:type] == 'Sexp'
       evaluate_sexp(ast, scope)
     else
       ast
@@ -63,14 +63,14 @@ module Evaluator
   end
 
   def evaluate_builtin(ast, scope)
-    func = evaluate(ast[:val], scope)
+    func = evaluate(ast[:value], scope)
     args = evaluate_args(ast[:args], scope)
 
     func.(args)
   end
 
   def evaluate_func(ast, scope)
-    func = evaluate(ast[:val], scope)
+    func = evaluate(ast[:value], scope)
     args = evaluate_args(ast[:args], scope)
 
     raise LispError.new("\"#{func.name}\" is not a function") unless func.is_a?(Function)
@@ -115,7 +115,7 @@ module Evaluator
     vars, body = ast.values_at(:vars, :body)
 
     params = vars.map { |var| var[:name] }
-    args = vars.map { |var| evaluate(var[:val], scope) }
+    args = vars.map { |var| evaluate(var[:value], scope) }
     evaluate(body, Scope.new(params: params, args: args, outer: scope))
   end
 

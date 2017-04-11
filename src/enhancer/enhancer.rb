@@ -1,14 +1,15 @@
 require_relative '../common/constants.rb'
 require_relative '../common/lisp_error.rb'
+require_relative '../types/atom.rb'
 
 module Enhancer
   include Constants
 
   def enhance(ast)
-    if ast[:type] == 'Sexp'
-      enhance_sexp(ast)
-    else
+    if ast.is_a?(Atom)
       ast
+    else
+      enhance_sexp(ast)
     end
   end
 
@@ -40,7 +41,7 @@ module Enhancer
   def enhance_regular(node)
     assert_args(node[:args].empty?, 'No arguments for expression')
 
-    node[:sexp_type] = SEXP_TYPES[:builtin] if is_builtin?(node[:val][:val])
+    node[:sexp_type] = SEXP_TYPES[:builtin] if is_builtin?(node[:value][:value])
     node[:args] = node[:args].drop(1).map { |arg| enhance(arg) }
     node
   end
@@ -51,7 +52,7 @@ module Enhancer
     _, test, true_case, false_case = node[:args]
     node[:test] = enhance(test)
     node[:true_case] = enhance(true_case)
-    node[:false_case] = false_case.nil? ? { type: 'Atom', atom_type: ATOM_TYPE[:nil] } : enhance(false_case)
+    node[:false_case] = false_case.nil? ? Atom.new(:nil) : enhance(false_case)
 
     node.delete(:args)
     node
@@ -62,7 +63,7 @@ module Enhancer
     _, var_name, var_val = args
     assert_vardef(args, 3, var_name)
 
-    node[:var_name] = var_name[:val]
+    node[:var_name] = var_name[:value]
     node[:var_val] = enhance(var_val)
     node.delete(:args)
     node
@@ -73,7 +74,7 @@ module Enhancer
     _, func_name, params, body = args
     assert_funcdef(args, 4, func_name)
 
-    node[:name] = func_name[:val]
+    node[:name] = func_name[:value]
     enhance_func(node, params, body)
   end
 
@@ -93,7 +94,7 @@ module Enhancer
       var_name, var_val = args
       assert_vardef(args, 2, var_name)
 
-      { name: var_name, val: var_val }
+      { name: var_name, value: var_val }
     end
     node[:body] = enhance(body)
 
@@ -132,12 +133,12 @@ module Enhancer
   end
 
   def assert_vardef(args, assert_len, var_name)
-    assert_args(args.length != assert_len, "Variable definition \"#{var_name[:val]}\" has no value")
+    assert_args(args.length != assert_len, "Variable definition \"#{var_name[:value]}\" has no value")
     assert_args(var_name[:type] == 'Atom', 'Invalid variable name')
   end
 
   def assert_funcdef(args, assert_len, func_name)
-    assert_args(args.length != assert_len, "Function definition \"#{func_name[:val]}\" has no value")
+    assert_args(args.length != assert_len, "Function definition \"#{func_name[:value]}\" has no value")
     assert_args(func_name[:type] == 'Atom', 'Invalid function name')
   end
 

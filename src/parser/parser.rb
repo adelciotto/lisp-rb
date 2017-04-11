@@ -1,5 +1,6 @@
 require_relative '../common/lisp_error.rb'
 require_relative '../common/constants.rb'
+require_relative '../types/atom.rb'
 
 module Parser
   include Constants
@@ -38,11 +39,11 @@ module Parser
     end
     tokens.shift
 
-    return to_atom(ATOM_TYPES[:nil]) if list.empty?
+    return Atom.new(:nil) if list.empty?
 
-    type = SEXP_TOKENS_MAP[list[0][:val]] || SEXP_TYPES[:default]
+    type = SEXP_TOKENS_MAP[list[0][:value]] || SEXP_TYPES[:default]
     res = { type: 'Sexp', sexp_type: type, args: list }
-    res[:val] = list[0] if type == SEXP_TYPES[:default]
+    res[:value] = list[0] if type == SEXP_TYPES[:default]
     res 
   end
 
@@ -51,13 +52,13 @@ module Parser
   rescue ArgumentError
     case token
     when 'true'
-      to_atom(ATOM_TYPES[:boolean], true)
+      Atom.new(:boolean, true)
     when 'false'
-      to_atom(ATOM_TYPES[:boolean], false)
+      Atom.new(:boolean, false)
     when 'nil'
-      to_atom(ATOM_TYPES[:nil])
+      Atom.new(:nil)
     else 
-      { type: 'Symbol', val: token }
+      { type: 'Symbol', value: token }
     end
   end
 
@@ -68,14 +69,10 @@ module Parser
   end
 
   def parse_integer(token)
-    to_atom(ATOM_TYPES[:integer], Integer(token))
+    Atom.new(:integer, Integer(token))
   end
 
   def parse_float(token)
-    to_atom(ATOM_TYPES[:float], Float(token))
-  end
-
-  def to_atom(atom_type, val = nil)
-    { type: 'Atom', atom_type: atom_type, val: val }
+    Atom.new(:float, Float(token))
   end
 end

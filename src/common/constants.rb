@@ -17,12 +17,6 @@ module Constants
     'and' => -> (args) { args.all? },
     'or' => -> (args) { args.any? }
   }
-  ATOM_TYPES = {
-    integer: 'Integer',
-    float: 'Float',
-    boolean: 'Boolean',
-    nil: 'Nil'
-  }
   SEXP_TYPES = {
     default: 'Exp',
     predicate: 'Predicate',
