@@ -21,7 +21,8 @@ module Lisp
         
         next if input.empty?
         result = interpreter.eval_expression(input)
-        puts "#{EVAL_TEXT}#{result}".green unless result.nil?
+        result_str = result.nil? ? 'nil' : result
+        puts "#{EVAL_TEXT}#{result_str}".green
       end
     rescue Interrupt
       puts 'Goodbye.'.green
