@@ -112,7 +112,7 @@ module Enhancer
       func_name, params, func_body = args
       assert_funcdef(args, 3, func_name)
 
-      res = { type: 'Sexp', sexp_type: SEXP_TYPES[:func_def], name: func_name }
+      res = { type: 'Sexp', sexp_type: SEXP_TYPES[:lambda], name: func_name }
       enhance_func(res, params, func_body)
     end
     node[:body] = enhance(body)

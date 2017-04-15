@@ -80,7 +80,7 @@ module Evaluator
       "Expected #{func.params.length}, but receieved #{args.length}"
     ) unless func.params.length == args.length
 
-    evaluate(func.body, Scope.new(params: func.params, args: args, outer: func.scope))
+    evaluate(func.body, Scope.new(param_names: func.params, param_values: args, outer: func.scope))
   end
 
   def evaluate_predicate(ast, scope)
@@ -90,21 +90,21 @@ module Evaluator
 
   def evaluate_vardef(ast, scope)
     var_name, var_val = ast.values_at(:var_name, :var_val)
-    raise LispError.new("#{var_name} is already defined") unless scope[var_name].nil?
+    raise LispError.new("#{var_name} is already defined") unless global_scope[var_name].nil?
 
-    global_scope[var_name] = evaluate(var_val, scope)
+    global_scope[var_name] = evaluate(var_val, global_scope)
     var_name
   end
 
   def evaluate_setf(ast, scope)
     var_name, var_val = ast.values_at(:var_name, :var_val)
-    raise LispError.new("#{var_name} is not defined") if scope[var_name].nil?
-    global_scope[var_name] = evaluate(var_val, scope)
+    raise LispError.new("#{var_name} is not defined") if global_scope[var_name].nil?
+    global_scope[var_name] = evaluate(var_val, global_scope)
   end
 
   def evaluate_fundef(ast, scope)
     name, params, body = ast.values_at(:name, :params, :body)
-    global_scope[name] = Function.new(name, params, body, scope)
+    global_scope[name] = Function.new(name, params, body, global_scope)
   end
 
   def evaluate_lambda(ast, scope)
@@ -115,17 +115,19 @@ module Evaluator
   def evaluate_let(ast, scope)
     vars, body = ast.values_at(:vars, :body)
 
-    params = vars.map { |var| var[:name] }
-    args = vars.map { |var| evaluate(var[:value], scope) }
-    evaluate(body, Scope.new(params: params, args: args, outer: scope))
+    names = vars.map { |var| var[:name] }
+    values = vars.map { |var| evaluate(var[:value], scope) }
+    lexical_scope = Scope.new(param_names: names, param_values: values, outer: scope)
+    evaluate(body, lexical_scope)
   end
 
   def evaluate_flet(ast, scope)
     funcs, body = ast.values_at(:funcs, :body)
+    lexical_scope = Scope.new(outer: scope)
 
-    params = funcs.map { |func| func[:name] }
-    args = funcs.map { |func| evaluate(func, scope) }
-    evaluate(body, Scope.new(params: params, args: args, outer: scope))
+    names = funcs.map { |func| func[:name] }
+    values = funcs.map { |func| evaluate(func, lexical_scope) }
+    evaluate(body, lexical_scope.with_data(names, values))
   end
 
   def evaluate_args(args, scope)

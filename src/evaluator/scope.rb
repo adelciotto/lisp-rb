@@ -1,9 +1,8 @@
 require_relative '../common/lisp_error.rb'
 
 class Scope
-  def initialize(params: [], args: [], outer: nil, initial: {})
-    param_values = params.map { |param| param.value }
-    @data = initial.merge(Hash[param_values.zip(args)])
+  def initialize(param_names: [], param_values: [], outer: nil, initial: {})
+    with_data(param_names, param_values, initial)
     @outer = outer
   end
 
@@ -16,6 +15,12 @@ class Scope
     end
   end
 
+  def with_data(param_names, param_values, initial = nil)
+    params = param_names.map { |param| param.value }
+    @data = transform_params(params, param_values, initial || data)
+    self
+  end
+
   def [](key)
     data[key]
   end
@@ -26,4 +31,8 @@ class Scope
 
   private 
   attr_accessor :data, :outer
+
+  def transform_params(param_names, param_values, initial)
+    initial.merge(Hash[param_names.zip(param_values)])
+  end
 end

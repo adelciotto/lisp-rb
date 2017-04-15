@@ -13,6 +13,8 @@
 - [x] Move magic strings into constants.rb
 - [x] Objectize Atom
 - [x] Objectize Symbol
+- [x] Recursive functions in flet
+- [ ] Variable naming and style audit
 - [ ] Objectize Expression
 - [ ] Cleanup enhancer
 - [ ] Implement support for multiline entrys
