@@ -1,7 +1,7 @@
 require_relative 'lisp_symbol.rb'
 
 class Atom < LispSymbol
-  attr_accessor :type
+  attr_reader :type
 
   ATOM_TYPES = {
     integer: 'Integer',

@@ -1,5 +1,5 @@
 class Function
-  attr_accessor :name, :params, :body, :scope
+  attr_reader :name, :params, :body, :scope
 
   def initialize(name, params, body, scope)
     @name = name

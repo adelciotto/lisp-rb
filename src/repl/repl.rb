@@ -1,6 +1,6 @@
 require 'readline'
-require_relative 'interpreter.rb'
-require_relative 'common/colorize.rb'
+require_relative '../interpreter.rb'
+require_relative '../common/colorize.rb'
 
 class Repl
   PROMPT_TEXT = '>>> '
@@ -19,7 +19,7 @@ class Repl
 
   private
 
-  attr_accessor :interpreter, :prompt, :stty_save
+  attr_reader :interpreter, :prompt, :stty_save
 
   def repl_loop
     puts 'Press CTRL-C or enter "exit" to quit.'

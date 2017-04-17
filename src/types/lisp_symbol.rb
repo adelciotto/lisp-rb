@@ -1,5 +1,5 @@
 class LispSymbol
-  attr_accessor :value
+  attr_reader :value
 
   def initialize(value = nil)
     @value = value

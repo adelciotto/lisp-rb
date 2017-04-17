@@ -1,4 +1,4 @@
-require_relative 'repl.rb'
+require_relative 'repl/repl.rb'
 
 module Lisp
   def self.repl

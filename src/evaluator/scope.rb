@@ -30,7 +30,8 @@ class Scope
   end
 
   private 
-  attr_accessor :data, :outer
+  attr_accessor :data
+  attr_reader :outer
 
   def transform_params(param_names, param_values, initial)
     initial.merge(Hash[param_names.zip(param_values)])

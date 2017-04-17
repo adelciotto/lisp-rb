@@ -14,13 +14,14 @@
 - [x] Objectize Atom
 - [x] Objectize Symbol
 - [x] Recursive functions in flet
-- [ ] Color matching brace on input line
 - [ ] Variable naming and style audit
 - [ ] Objectize Expression
 - [ ] Cleanup enhancer
-- [ ] Implement support for multiline entrys
-- [ ] Implement the List data structure.
 - [ ] Implement the quote function.
 - [ ] Improve the parsing
 - [ ] Implement support for strings.
+- [ ] Implement support for multiline entrys
+- [ ] Begin writing custom readline module
+- [ ] Color matching brace on input line
+- [ ] Implement the List data structure.
 - [ ] Implement persistent command history
