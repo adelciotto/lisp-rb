@@ -15,9 +15,11 @@
 - [x] Objectize Symbol
 - [x] Recursive functions in flet
 - [ ] Variable naming and style audit
-- [ ] Objectize Expression
+- [x] Objectize Expression
 - [ ] Cleanup enhancer
-- [ ] Implement the quote function.
+- [x] Implement the quote function.
+- [x] Implement callable eval function.
+- [ ] Get quote as function param working
 - [ ] Improve the parsing
 - [ ] Implement support for strings.
 - [ ] Implement support for multiline entrys

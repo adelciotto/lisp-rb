@@ -2,18 +2,21 @@ require_relative '../common/lisp_error.rb'
 require_relative '../common/constants.rb'
 require_relative '../types/atom.rb'
 require_relative '../types/lisp_symbol.rb'
+require_relative '../types/expression.rb'
 
 module Parser
   include Constants
 
-  SEXP_TOKENS_MAP = {
-    'if' => SEXP_TYPES[:predicate],
-    'defvar' => SEXP_TYPES[:var_def],
-    'setf' => SEXP_TYPES[:var_set],
-    'defun' => SEXP_TYPES[:func_def],
-    'lambda' => SEXP_TYPES[:lambda],
-    'let' => SEXP_TYPES[:var_let],
-    'flet' => SEXP_TYPES[:func_let]
+  EXP_TOKENS_MAP = {
+    'if' => Expression::TYPES[:predicate],
+    'defvar' => Expression::TYPES[:var_def],
+    'setf' => Expression::TYPES[:var_set],
+    'defun' => Expression::TYPES[:func_def],
+    'lambda' => Expression::TYPES[:lambda],
+    'let' => Expression::TYPES[:var_let],
+    'flet' => Expression::TYPES[:func_let],
+    'eval' => Expression::TYPES[:eval],
+    'quote' => Expression::TYPES[:quote]
   }
 
   def parse(tokens)
@@ -22,7 +25,7 @@ module Parser
     token = tokens.shift
     case token
     when '('
-      parse_sexp(token, tokens)
+      parse_exp(token, tokens)
     when ')'
       # TODO: Look into highlighting parts of the exp to more easily expose errors.
       raise LispError.new('No matching opening brace "("')
@@ -33,7 +36,7 @@ module Parser
 
   private
 
-  def parse_sexp(curr_token, tokens)
+  def parse_exp(curr_token, tokens)
     list = []
     until tokens[0] == ')' do 
       list << parse(tokens)
@@ -42,19 +45,9 @@ module Parser
 
     return Atom.new(:nil) if list.empty?
 
-    # TODO: Ughh, make this nicer once expressions are encapsulated in class.
-    type = sexp_type(list[0]) || SEXP_TYPES[:default]
-    res = { type: 'Sexp', sexp_type: type, args: list }
-    res[:value] = list[0] if type == SEXP_TYPES[:default]
-    res 
-  end
-
-  def sexp_type(symbol)
-    if symbol.is_a?(LispSymbol)
-      SEXP_TOKENS_MAP[symbol.value]
-    else
-      SEXP_TOKENS_MAP[symbol[:value]]
-    end
+    symbol = list[0].is_a?(Expression) ? list[0].symbol : list[0]
+    type = EXP_TOKENS_MAP[symbol.value] || Expression::TYPES[:default]
+    Expression.new(type, list, symbol)
   end
 
   def parse_atom(token)
