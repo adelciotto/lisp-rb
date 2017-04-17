@@ -14,6 +14,7 @@
 - [x] Objectize Atom
 - [x] Objectize Symbol
 - [x] Recursive functions in flet
+- [ ] Color matching brace on input line
 - [ ] Variable naming and style audit
 - [ ] Objectize Expression
 - [ ] Cleanup enhancer

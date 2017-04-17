@@ -7,7 +7,7 @@ require_relative 'common/lisp_error.rb'
 class Interpreter
   include Tokenizer, Parser, Enhancer, Evaluator
 
-  def eval_expression(exp)
+  def eval(exp)
     tokens = tokenize(exp)
     ast = enhance(parse(tokens))
     evaluate(ast, global_scope)
