@@ -9,7 +9,7 @@ require_relative 'function.rb'
 module Evaluator
   include Constants
 
-  def evaluate(ast_node, scope, eval_quote = false)
+  def evaluate(ast_node, scope = global_scope)
     type = ast_node.class.name
     if type == 'Atom'
       ast_node.value
@@ -17,14 +17,10 @@ module Evaluator
       val = ast_node.value
       scope.find(val)[val]
     elsif type == 'Expression'
-      evaluate_exp(ast_node, scope, eval_quote)
+      evaluate_exp(ast_node, scope)
     else
       ast
     end
-  end
-
-  def global_scope
-    @global_scope ||= Scope.new(initial: operators.merge(functions))
   end
 
   private
@@ -41,7 +37,11 @@ module Evaluator
     end
   end
 
-  def evaluate_exp(ast_node, scope, eval_quote = false)
+  def global_scope
+    @global_scope ||= Scope.new(initial: operators.merge(functions))
+  end
+
+  def evaluate_exp(ast_node, scope)
     case ast_node.type
     when Expression::TYPES[:default]
       evaluate_func(ast_node, scope)
@@ -62,9 +62,9 @@ module Evaluator
     when Expression::TYPES[:func_let]
       evaluate_flet(ast_node, scope)
     when Expression::TYPES[:eval]
-      evaluate(ast_node.enhancements[:expression], scope, true)
+      evaluate_eval(ast_node, scope)
     when Expression::TYPES[:quote]
-      eval_quote ? evaluate(ast_node.children[1], scope) : ast_node
+      ast_node
     end
   end
 
@@ -133,6 +133,16 @@ module Evaluator
     names = funcs.map { |func| func.enhancements[:name] }
     values = funcs.map { |func| evaluate(func, lexical_scope) }
     evaluate(body, lexical_scope.with_data(names, values))
+  end
+
+  def evaluate_eval(node, scope)
+    exp = node.enhancements[:expression]
+
+    if exp.is_a?(Expression) && exp.type == Expression::TYPES[:quote]
+      evaluate(exp.enhancements[:expression], scope)
+    else
+      evaluate(exp, scope)
+    end
   end
 
   def evaluate_args(args, scope)

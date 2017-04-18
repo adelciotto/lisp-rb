@@ -10,7 +10,7 @@ class Interpreter
   def eval(exp)
     tokens = tokenize(exp)
     ast = enhance(parse(tokens))
-    evaluate(ast, global_scope)
+    evaluate(ast)
   rescue LispError => e
     puts e
   end

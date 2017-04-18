@@ -148,7 +148,7 @@ module Enhancer
 
   def enhance_quote(node)
     exp = node.children[1]
-    node.children[1] = enhance(exp)
+    node.enhancements[:expression] = node.children[1] = enhance(exp)
     node
   end
 
