@@ -19,7 +19,7 @@
 - [ ] Cleanup enhancer
 - [x] Implement the quote function.
 - [x] Implement callable eval function.
-- [ ] Get quote as function param working
+- [x] Fix quote & eval bugs
 - [ ] Improve the parsing
 - [ ] Implement support for strings.
 - [ ] Implement support for multiline entrys

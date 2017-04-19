@@ -22,7 +22,8 @@ class Repl
   attr_reader :interpreter, :prompt, :stty_save
 
   def repl_loop
-    puts 'Press CTRL-C or enter "exit" to quit.'
+    puts 'Welcome to lisp.rb'.green
+    puts "Press #{'CTRL-C'.green} or enter #{'exit'.green} to quit."
     begin
       while input = readline_with_history
         raise Interrupt.new if input == 'exit'

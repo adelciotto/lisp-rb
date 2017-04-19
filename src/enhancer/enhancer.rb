@@ -39,13 +39,16 @@ module Enhancer
     when Expression::TYPES[:eval]
       enhance_eval(ast_node)
     when Expression::TYPES[:quote]
-      enhance_quote(ast_node)
+      ast_node.enhancements[:expression] = enhance(ast_node.children[1])
+      ast_node
     else
       ast_node
     end
   end
 
   def enhance_regular(node)
+    raise LispError.new('Illegal function call') if node.children[0].is_a?(Atom)
+
     node.type = Expression::TYPES[:builtin] if is_builtin?(node.symbol.value)
     node.children = node.children.drop(1).map { |arg| enhance(arg) }
     node
@@ -100,7 +103,7 @@ module Enhancer
       var_name, var_val = args
       assert_vardef(args, 2, var_name)
 
-      { name: var_name, value: var_val }
+      { name: var_name, value: enhance(var_val) }
     end
 
     node.enhancements[:body] = enhance(body)
@@ -142,13 +145,12 @@ module Enhancer
     assert_args(children.length < 2, 'No arguments for expression')
 
     exp = children[1]
-    node.enhancements[:expression] = enhance(exp)
-    node
-  end
+    if exp.is_a?(Expression) && exp.type == Expression::TYPES[:quote]
+      node.enhancements[:expression] = enhance(exp.children[1])
+    else
+      node.enhancements[:expression] = enhance(exp)
+    end
 
-  def enhance_quote(node)
-    exp = node.children[1]
-    node.enhancements[:expression] = node.children[1] = enhance(exp)
     node
   end
 

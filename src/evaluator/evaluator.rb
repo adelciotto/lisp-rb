@@ -1,5 +1,5 @@
-require_relative '../common/lisp_error.rb'
 require_relative '../common/constants.rb'
+require_relative '../common/lisp_error.rb'
 require_relative '../types/atom.rb'
 require_relative '../types/lisp_symbol.rb'
 require_relative '../types/expression.rb'
@@ -19,7 +19,7 @@ module Evaluator
     elsif type == 'Expression'
       evaluate_exp(ast_node, scope)
     else
-      ast
+      ast_node
     end
   end
 
@@ -136,13 +136,10 @@ module Evaluator
   end
 
   def evaluate_eval(node, scope)
-    exp = node.enhancements[:expression]
+    result = evaluate(node.enhancements[:expression], scope)
 
-    if exp.is_a?(Expression) && exp.type == Expression::TYPES[:quote]
-      evaluate(exp.enhancements[:expression], scope)
-    else
-      evaluate(exp, scope)
-    end
+    return result unless result.is_a?(Expression) && result.type == Expression::TYPES[:quote]
+    evaluate_eval(result, scope)
   end
 
   def evaluate_args(args, scope)
