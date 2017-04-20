@@ -1,3 +1,5 @@
+require_relative '../common/util.rb'
+
 class Expression
   attr_accessor :type, :children, :symbol, :enhancements
 
@@ -23,6 +25,18 @@ class Expression
   end
 
   def to_s
-    "Expression: #{type}"
+    syntax(children)
+  end
+
+  def syntax(children)
+    exp_syntax = children.inject('') do |result, child|
+      if child.is_a?(LispSymbol)
+        "#{result} #{child}"
+      else
+        "#{result} (#{child.symbol} #{syntax(child.children)})"
+      end
+    end
+
+    Util.strip_extra_whitespace(exp_syntax)
   end
 end

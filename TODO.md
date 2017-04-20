@@ -20,6 +20,7 @@
 - [x] Implement the quote function.
 - [x] Implement callable eval function.
 - [x] Fix quote & eval bugs
+- [x] Implement Expression.to_s
 - [ ] Improve the parsing
 - [ ] Implement support for strings.
 - [ ] Implement support for multiline entrys
