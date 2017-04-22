@@ -1,11 +1,11 @@
-require_relative '../common/constants.rb'
+require_relative '../common/builtins.rb'
 require_relative '../common/lisp_error.rb'
 require_relative '../types/atom.rb'
 require_relative '../types/lisp_symbol.rb'
 require_relative '../types/expression.rb'
 
 module Enhancer
-  include Constants
+  include Builtins
 
   def enhance(ast_node)
     type = ast_node.class.name 

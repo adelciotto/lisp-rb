@@ -1,4 +1,4 @@
-require_relative '../common/constants.rb'
+require_relative '../common/builtins.rb'
 require_relative '../common/lisp_error.rb'
 require_relative '../types/atom.rb'
 require_relative '../types/lisp_symbol.rb'
@@ -7,7 +7,7 @@ require_relative 'scope.rb'
 require_relative 'function.rb'
 
 module Evaluator
-  include Constants
+  include Builtins
 
   def evaluate(ast_node, scope = global_scope)
     type = ast_node.class.name
@@ -25,20 +25,14 @@ module Evaluator
 
   private
 
-  def operators
-    @operators ||= OPERATORS.inject({}) do |res, (key, val)| 
-      res.merge({ key => -> (args) { args.reduce(val) } })
-    end
-  end
-
   def functions
     @functions ||= FUNCTIONS.inject({}) do |res, (key, val)|
-      res.merge({ key => val })
+      res.merge(key => val)
     end
   end
 
   def global_scope
-    @global_scope ||= Scope.new(initial: operators.merge(functions))
+    @global_scope ||= Scope.new(initial: OPERATORS.merge(functions))
   end
 
   def evaluate_exp(ast_node, scope)

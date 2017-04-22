@@ -1,3 +1,5 @@
+require_relative 'colorize.rb'
+
 class LispError < StandardError
   def initialize(msg)
     super("Error: #{msg}".red)
