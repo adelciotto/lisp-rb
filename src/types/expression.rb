@@ -25,18 +25,18 @@ class Expression
   end
 
   def to_s
-    syntax(children)
+    "(#{syntax(children)})"
   end
 
   def syntax(children)
-    exp_syntax = children.inject('') do |result, child|
-      if child.is_a?(LispSymbol)
-        "#{result} #{child}"
+    children.inject('') do |result, child|
+      exp = if child.is_a?(LispSymbol)
+        child
       else
-        "#{result} (#{child.symbol} #{syntax(child.children)})"
+        "(#{syntax(child.children)})"
       end
-    end
 
-    Util.strip_extra_whitespace(exp_syntax)
+      result.empty? ? exp.to_s : "#{result} #{exp}"
+    end
   end
 end

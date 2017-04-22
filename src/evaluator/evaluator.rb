@@ -143,6 +143,6 @@ module Evaluator
   end
 
   def evaluate_args(args, scope)
-    args.map { |arg| evaluate(arg, scope) }
+    args.drop(1).map { |arg| evaluate(arg, scope) }
   end
 end

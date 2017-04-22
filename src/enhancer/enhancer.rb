@@ -50,7 +50,7 @@ module Enhancer
     raise LispError.new('Illegal function call') if node.children[0].is_a?(Atom)
 
     node.type = Expression::TYPES[:builtin] if is_builtin?(node.symbol.value)
-    node.children = node.children.drop(1).map { |arg| enhance(arg) }
+    node.children.each { |child| enhance(child) }
     node
   end
 
