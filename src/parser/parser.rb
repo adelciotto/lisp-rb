@@ -1,12 +1,9 @@
 require_relative '../common/lisp_error.rb'
-require_relative '../common/constants.rb'
 require_relative '../types/atom.rb'
 require_relative '../types/lisp_symbol.rb'
 require_relative '../types/expression.rb'
 
 module Parser
-  include Constants
-
   EXP_TOKENS_MAP = {
     'if' => Expression::TYPES[:predicate],
     'defvar' => Expression::TYPES[:var_def],
@@ -17,7 +14,7 @@ module Parser
     'flet' => Expression::TYPES[:func_let],
     'eval' => Expression::TYPES[:eval],
     'quote' => Expression::TYPES[:quote]
-  }
+  }.freeze
 
   def parse(tokens)
     raise LispError.new('Unexpected EOF') if tokens.empty?
@@ -42,8 +39,6 @@ module Parser
       list << parse(tokens)
     end
     tokens.shift
-
-    return Atom.new(:nil) if list.empty?
 
     symbol = list[0].is_a?(Expression) ? list[0].symbol : list[0]
     type = EXP_TOKENS_MAP[symbol.value] || Expression::TYPES[:default]
