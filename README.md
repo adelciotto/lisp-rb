@@ -2,8 +2,8 @@
 
 ![preview](preview.png)
 
-A short and incomplete Lisp repl written in the ruby programming
-language. Only a small custom subset of a typical Lisp has been implemented.
+A Lisp interpreter written in the ruby programming language.
+Only a small custom subset of a typical Lisp has been implemented.
 This is simply a learning experience for myself to gain more insight into both
 the lisp and ruby programming languages.
 

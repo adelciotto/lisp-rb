@@ -413,6 +413,60 @@ describe Interpreter do
           end
         end
       end
+
+      describe 'functions' do
+        let(:function) { '' }
+        let(:args) { [] }
+        let(:expression) { "(#{function} #{args.join(' ')})" }
+
+        describe 'exit' do
+          let(:function) { 'exit' }
+
+          it 'should raise Interrupt' do
+            -> { interpreter.eval(expression) }.must_raise Interrupt
+          end
+        end
+
+        describe 'and' do
+          let(:function) { 'and' }
+
+          describe 'when all arguments are true' do
+            let(:args) { [true, true, true] }
+
+            it 'should return true' do
+              assert interpreter.eval(expression)
+            end
+          end
+
+          describe 'when all arguments are not true' do
+            let(:args) { [true, false, true] }
+
+            it 'should return false' do
+              refute interpreter.eval(expression)
+            end
+          end
+        end
+
+        describe 'or' do
+          let(:function) { 'or' }
+
+          describe 'when a argument is true' do
+            let(:args) { [true, false, false] }
+
+            it 'should return true' do
+              assert interpreter.eval(expression)
+            end
+          end
+
+          describe 'when all arguments are false' do
+            let(:args) { [false, false, false] }
+
+            it 'should return false' do
+              refute interpreter.eval(expression)
+            end
+          end
+        end
+      end
     end
   end
 end

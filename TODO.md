@@ -21,6 +21,7 @@
 - [x] Implement callable eval function.
 - [x] Fix quote & eval bugs
 - [x] Implement Expression.to_s
+- [ ] Rescue LispError in REPL, test for exception raise in interpreter tests
 - [ ] Improve the parsing
 - [ ] Implement support for strings.
 - [ ] Implement support for multiline entrys
