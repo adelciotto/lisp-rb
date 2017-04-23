@@ -12,6 +12,6 @@ class Interpreter
     ast = enhance(parse(tokens))
     evaluate(ast)
   rescue LispError => e
-    puts e
+    warn e
   end
 end
