@@ -40,8 +40,27 @@ describe Interpreter do
         let(:operator) { '-' }
         let(:result) { -4 }
 
-        it 'should subtract all the arguments' do
-          assert_equal interpreter.eval(expression), result
+        describe 'when there are arguments' do
+          it 'should subtract all the arguments' do
+            assert_equal interpreter.eval(expression), result
+          end
+        end
+
+        describe 'when there are no arguments' do
+          let(:args) { [] }
+
+          it 'should raise a LispError' do
+
+          end
+        end
+
+        describe 'when there is one argument' do
+          let(:result) { 4 }
+          let(:args) { [result] }
+
+          it 'returns the argument' do
+            assert_equal interpreter.eval(expression), result
+          end
         end
       end
 
