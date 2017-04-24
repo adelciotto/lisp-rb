@@ -1,4 +1,5 @@
 require 'readline'
+require_relative '../common/lisp_error.rb'
 require_relative '../interpreter.rb'
 require_relative '../common/colorize.rb'
 
@@ -29,11 +30,20 @@ class Repl
         raise Interrupt.new if input == 'exit'
         next if input.empty?
 
-        expression = interpreter.eval(input)
-        print_expression(expression)
+        evaluate(input)
       end
     rescue Interrupt
       handle_interrupt
+    end
+  end
+
+  def evaluate(input)
+    begin
+      expression = interpreter.eval(input)
+    rescue LispError => e
+      warn e
+    ensure
+      print_expression(expression)
     end
   end
 

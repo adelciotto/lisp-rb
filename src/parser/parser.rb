@@ -40,6 +40,8 @@ module Parser
     end
     tokens.shift
 
+    return Atom.new(:nil) if list.empty?
+
     symbol = list[0].is_a?(Expression) ? list[0].symbol : list[0]
     type = EXP_TOKENS_MAP[symbol.value] || Expression::TYPES[:default]
     Expression.new(type, list, symbol)

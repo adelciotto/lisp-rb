@@ -55,12 +55,9 @@ describe Interpreter do
           describe 'when there are no arguments' do
             let(:args) { [] }
 
-            it 'should print error to STDERR' do
-              assert_output(nil, /#{error_message}/) { interpreter.eval(expression) }
-            end
-
-            it 'should return nil' do
-              assert_nil interpreter.eval(expression)
+            it 'should raise a LispError' do
+              err = assert_raises(LispError) { interpreter.eval(expression) }
+              assert_match(/#{error_message}/, err.message)
             end
           end
 
@@ -108,12 +105,9 @@ describe Interpreter do
           describe 'when there are no arguments' do
             let(:args) { [] }
 
-            it 'should print error to STDERR' do
-              assert_output(nil, /#{error_message}/) { interpreter.eval(expression) }
-            end
-
-            it 'should return nil' do
-              assert_nil interpreter.eval(expression)
+            it 'should raise a LispError' do
+              err = assert_raises(LispError) { interpreter.eval(expression) }
+              assert_match(/#{error_message}/, err.message)
             end
           end
 
@@ -141,12 +135,9 @@ describe Interpreter do
           describe 'when there are no arguments' do
             let(:args) { [] }
 
-            it 'should print error to STDERR' do
-              assert_output(nil, /#{error_message}/) { interpreter.eval(expression) }
-            end
-
-            it 'should return nil' do
-              assert_nil interpreter.eval(expression)
+            it 'should raise a LispError' do
+              err = assert_raises(LispError) { interpreter.eval(expression) }
+              assert_match(/#{error_message}/, err.message)
             end
           end
         end
@@ -165,12 +156,9 @@ describe Interpreter do
           describe 'when there are no arguments' do
             let(:args) { [] }
 
-            it 'should print error to STDERR' do
-              assert_output(nil, /#{error_message}/) { interpreter.eval(expression) }
-            end
-
-            it 'should return nil' do
-              assert_nil interpreter.eval(expression)
+            it 'should raise a LispError' do
+              err = assert_raises(LispError) { interpreter.eval(expression) }
+              assert_match(/#{error_message}/, err.message)
             end
           end
 
@@ -207,12 +195,9 @@ describe Interpreter do
           describe 'when there are no arguments' do
             let(:args) { [] }
 
-            it 'should print error to STDERR' do
-              assert_output(nil, /#{error_message}/) { interpreter.eval(expression) }
-            end
-
-            it 'should return nil' do
-              assert_nil interpreter.eval(expression)
+            it 'should raise a LispError' do
+              err = assert_raises(LispError) { interpreter.eval(expression) }
+              assert_match(/#{error_message}/, err.message)
             end
           end
         end
@@ -240,24 +225,18 @@ describe Interpreter do
           describe 'when there are no arguments' do
             let(:args) { [] }
 
-            it 'should print error to STDERR' do
-              assert_output(nil, /#{error_message}/) { interpreter.eval(expression) }
-            end
-
-            it 'should return nil' do
-              assert_nil interpreter.eval(expression)
+            it 'should raise a LispError' do
+              err = assert_raises(LispError) { interpreter.eval(expression) }
+              assert_match(/#{error_message}/, err.message)
             end
           end
 
           describe 'when there are too many arguments' do
             let(:args) { [1, 2, 3] }
 
-            it 'should print error to STDERR' do
-              assert_output(nil, /#{error_message(true)}/) { interpreter.eval(expression) }
-            end
-
-            it 'should return nil' do
-              assert_nil interpreter.eval(expression)
+            it 'should raise a LispError' do
+              err = assert_raises(LispError) { interpreter.eval(expression) }
+              assert_match(/#{error_message(true)}/, err.message)
             end
           end
         end
@@ -285,24 +264,18 @@ describe Interpreter do
           describe 'when there are no arguments' do
             let(:args) { [] }
 
-            it 'should print error to STDERR' do
-              assert_output(nil, /#{error_message}/) { interpreter.eval(expression) }
-            end
-
-            it 'should return nil' do
-              assert_nil interpreter.eval(expression)
+            it 'should raise a LispError' do
+              err = assert_raises(LispError) { interpreter.eval(expression) }
+              assert_match(/#{error_message}/, err.message)
             end
           end
 
           describe 'when there are too many arguments' do
             let(:args) { [1, 2, 3] }
 
-            it 'should print error to STDERR' do
-              assert_output(nil, /#{error_message(true)}/) { interpreter.eval(expression) }
-            end
-
-            it 'should return nil' do
-              assert_nil interpreter.eval(expression)
+            it 'should raise a LispError' do
+              err = assert_raises(LispError) { interpreter.eval(expression) }
+              assert_match(/#{error_message(true)}/, err.message)
             end
           end
         end
@@ -338,24 +311,18 @@ describe Interpreter do
           describe 'when there are no arguments' do
             let(:args) { [] }
 
-            it 'should print error to STDERR' do
-              assert_output(nil, /#{error_message}/) { interpreter.eval(expression) }
-            end
-
-            it 'should return nil' do
-              assert_nil interpreter.eval(expression)
+            it 'should raise a LispError' do
+              err = assert_raises(LispError) { interpreter.eval(expression) }
+              assert_match(/#{error_message}/, err.message)
             end
           end
 
           describe 'when there are too many arguments' do
             let(:args) { [1, 2, 3] }
 
-            it 'should print error to STDERR' do
-              assert_output(nil, /#{error_message(true)}/) { interpreter.eval(expression) }
-            end
-
-            it 'should return nil' do
-              assert_nil interpreter.eval(expression)
+            it 'should raise a LispError' do
+              err = assert_raises(LispError) { interpreter.eval(expression) }
+              assert_match(/#{error_message(true)}/, err.message)
             end
           end
         end
@@ -391,24 +358,18 @@ describe Interpreter do
           describe 'when there are no arguments' do
             let(:args) { [] }
 
-            it 'should print error to STDERR' do
-              assert_output(nil, /#{error_message}/) { interpreter.eval(expression) }
-            end
-
-            it 'should return nil' do
-              assert_nil interpreter.eval(expression)
+            it 'should raise a LispError' do
+              err = assert_raises(LispError) { interpreter.eval(expression) }
+              assert_match(/#{error_message}/, err.message)
             end
           end
 
           describe 'when there are too many arguments' do
             let(:args) { [1, 2, 3] }
 
-            it 'should print error to STDERR' do
-              assert_output(nil, /#{error_message(true)}/) { interpreter.eval(expression) }
-            end
-
-            it 'should return nil' do
-              assert_nil interpreter.eval(expression)
+            it 'should raise a LispError' do
+              err = assert_raises(LispError) { interpreter.eval(expression) }
+              assert_match(/#{error_message(true)}/, err.message)
             end
           end
         end
