@@ -4,7 +4,10 @@ require_relative 'enhancer/enhancer.rb'
 require_relative 'evaluator/evaluator.rb'
 
 class Interpreter
-  include Tokenizer, Parser, Enhancer, Evaluator
+  include Tokenizer
+  include Parser
+  include Enhancer
+  include Evaluator
 
   def eval(exp)
     tokens = tokenize(exp)

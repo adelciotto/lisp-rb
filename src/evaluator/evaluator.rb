@@ -44,11 +44,11 @@ module Evaluator
     when Expression::TYPES[:predicate]
       evaluate_predicate(ast_node, scope)
     when Expression::TYPES[:var_def]
-      evaluate_vardef(ast_node, scope)
+      evaluate_vardef(ast_node)
     when Expression::TYPES[:var_set]
-      evaluate_setf(ast_node, scope)
+      evaluate_setf(ast_node)
     when Expression::TYPES[:func_def]
-      evaluate_fundef(ast_node, scope)
+      evaluate_fundef(ast_node)
     when Expression::TYPES[:lambda]
       evaluate_lambda(ast_node, scope)
     when Expression::TYPES[:var_let]
@@ -66,18 +66,19 @@ module Evaluator
     func = evaluate(node.symbol, scope)
     args = evaluate_args(node.children, scope)
 
-    func.(args)
+    func.call(args)
   end
 
   def evaluate_func(node, scope)
     func = evaluate(node.symbol, scope)
     args = evaluate_args(node.children, scope)
 
-    raise LispError.new("\"#{func.name}\" is not a function") unless func.is_a?(Function)
-    raise LispError.new(
-      "Incorrect number of arguments supplied to function \"#{func.name}\"\n"\
-      "Expected #{func.params.length}, but receieved #{args.length}"
-    ) unless func.params.length == args.length
+    raise LispError, "\"#{func.name}\" is not a function" unless func.is_a?(Function)
+    unless func.params.length == args.length
+      raise LispError,
+            "Incorrect number of arguments supplied to function \"#{func.name}\"\n"\
+            "Expected #{func.params.length}, but receieved #{args.length}"
+    end
 
     evaluate(func.body, Scope.new(param_names: func.params, param_values: args, outer: func.scope))
   end
@@ -87,21 +88,21 @@ module Evaluator
     evaluate(test, scope) ? evaluate(true_case, scope) : evaluate(false_case, scope)
   end
 
-  def evaluate_vardef(node, scope)
+  def evaluate_vardef(node)
     var_name, var_val = node.enhancements.values_at(:var_name, :var_val)
-    raise LispError.new("#{var_name} is already defined") unless global_scope[var_name].nil?
+    raise LispError, "#{var_name} is already defined" unless global_scope[var_name].nil?
 
     global_scope[var_name] = evaluate(var_val, global_scope)
     var_name
   end
 
-  def evaluate_setf(node, scope)
+  def evaluate_setf(node)
     var_name, var_val = node.enhancements.values_at(:var_name, :var_val)
-    raise LispError.new("#{var_name} is not defined") if global_scope[var_name].nil?
+    raise LispError, "#{var_name} is not defined" if global_scope[var_name].nil?
     global_scope[var_name] = evaluate(var_val, global_scope)
   end
 
-  def evaluate_fundef(node, scope)
+  def evaluate_fundef(node)
     name, params, body = node.enhancements.values_at(:name, :params, :body)
     global_scope[name] = Function.new(name, params, body, global_scope)
   end

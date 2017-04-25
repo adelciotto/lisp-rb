@@ -17,7 +17,7 @@ module Parser
   }.freeze
 
   def parse(tokens)
-    raise LispError.new('Unexpected EOF') if tokens.empty?
+    raise LispError, 'Unexpected EOF' if tokens.empty?
 
     token = tokens.shift
     case token
@@ -25,7 +25,7 @@ module Parser
       parse_exp(token, tokens)
     when ')'
       # TODO: Look into highlighting parts of the exp to more easily expose errors.
-      raise LispError.new('No matching opening brace "("')
+      raise LispError, 'No matching opening brace "("'
     else
       parse_atom(token)
     end
@@ -35,9 +35,7 @@ module Parser
 
   def parse_exp(curr_token, tokens)
     list = []
-    until tokens[0] == ')' do 
-      list << parse(tokens)
-    end
+    list << parse(tokens) until tokens[0] == ')'
     tokens.shift
 
     return Atom.new(:nil) if list.empty?
@@ -57,7 +55,7 @@ module Parser
       Atom.new(:boolean, false)
     when 'nil'
       Atom.new(:nil)
-    else 
+    else
       LispSymbol.new(token)
     end
   end

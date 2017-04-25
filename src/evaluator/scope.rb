@@ -7,16 +7,16 @@ class Scope
   end
 
   def find(var)
-    if data.has_key?(var)
+    if data.key?(var)
       data
     else
-      raise LispError.new("Cannot evaluate #{var}") if outer.nil?
+      raise LispError, "Cannot evaluate #{var}" if outer.nil?
       outer.find(var)
     end
   end
 
   def with_data(param_names, param_values, initial = nil)
-    params = param_names.map { |param| param.value }
+    params = param_names.map(&:value)
     @data = transform_params(params, param_values, initial || data)
     self
   end
@@ -29,7 +29,8 @@ class Scope
     data[key] = val
   end
 
-  private 
+  private
+
   attr_accessor :data
   attr_reader :outer
 

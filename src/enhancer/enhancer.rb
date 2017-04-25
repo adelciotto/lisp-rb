@@ -8,7 +8,7 @@ module Enhancer
   include Builtins
 
   def enhance(ast_node)
-    type = ast_node.class.name 
+    type = ast_node.class.name
     if type == 'Atom' || type == 'LispSymbol'
       ast_node
     elsif type == 'Expression'
@@ -47,9 +47,9 @@ module Enhancer
   end
 
   def enhance_regular(node)
-    raise LispError.new('Illegal function call') if node.children[0].is_a?(Atom)
+    raise LispError, 'Illegal function call' if node.children[0].is_a?(Atom)
 
-    node.type = Expression::TYPES[:builtin] if is_builtin?(node.symbol.value)
+    node.type = Expression::TYPES[:builtin] if builtin?(node.symbol.value)
     node.children.each { |child| enhance(child) }
     node
   end
@@ -130,11 +130,12 @@ module Enhancer
   end
 
   def enhance_func(node, params, body)
-    node.enhancements[:params] = if params.is_a?(Atom) && params.type == :nil
-      []
-    else
-      params.children || []
-    end
+    node.enhancements[:params] =
+      if params.is_a?(Atom) && params.type == :nil
+        []
+      else
+        params.children || []
+      end
 
     node.enhancements[:body] = enhance(body)
     node
@@ -145,16 +146,17 @@ module Enhancer
     assert_args(children.length < 2, 'No arguments for expression')
 
     exp = children[1]
-    if exp.is_a?(Expression) && exp.type == Expression::TYPES[:quote]
-      node.enhancements[:expression] = enhance(exp.children[1])
-    else
-      node.enhancements[:expression] = enhance(exp)
-    end
+    node.enhancements[:expression] =
+      if exp.is_a?(Expression) && exp.type == Expression::TYPES[:quote]
+        enhance(exp.children[1])
+      else
+        enhance(exp)
+      end
 
     node
   end
 
-  def is_builtin?(symbol)
+  def builtin?(symbol)
     OPERATORS[symbol] || FUNCTIONS[symbol]
   end
 

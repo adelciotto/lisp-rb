@@ -22,7 +22,7 @@ module Builtins
 
   def self.operator_fn(op, args, min_args, max_args = nil, default_result = nil)
     len = args.length
-    raise LispError, "Too few arguments given to #{op}" unless len >= min_args || min_args == 0
+    raise LispError, "Too few arguments given to #{op}" unless len >= min_args || min_args.zero?
     raise LispError, "Too many arguments given to #{op}" unless max_args.nil? || len <= max_args
 
     return default_result unless len > min_args || default_result.nil?

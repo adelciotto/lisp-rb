@@ -8,7 +8,7 @@ class Atom < LispSymbol
     float: 'Float',
     boolean: 'Boolean',
     nil: 'Nil'
-  }
+  }.freeze
 
   def initialize(type, value = nil)
     super(value)

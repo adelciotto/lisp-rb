@@ -1,6 +1,6 @@
 require 'minitest/reporters'
 
-Minitest::Reporters.use! [Minitest::Reporters::SpecReporter.new(:color => true)]
+Minitest::Reporters.use! [Minitest::Reporters::SpecReporter.new(color: true)]
 
 def require_src(path)
   require_relative "../src/#{path}"

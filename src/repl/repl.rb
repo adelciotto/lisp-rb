@@ -4,8 +4,8 @@ require_relative '../interpreter.rb'
 require_relative '../common/colorize.rb'
 
 class Repl
-  PROMPT_TEXT = '>>> '
-  EVAL_TEXT = '== '
+  PROMPT_TEXT = '>>> '.freeze
+  EVAL_TEXT = '== '.freeze
   private_constant :PROMPT_TEXT, :EVAL_TEXT
 
   def initialize(prompt = PROMPT_TEXT)
@@ -27,7 +27,7 @@ class Repl
     puts "Press #{'CTRL-C'.green} or enter #{'exit'.green} to quit."
     begin
       while input = readline_with_history
-        raise Interrupt.new if input == 'exit'
+        raise Interrupt if input == 'exit'
         next if input.empty?
 
         evaluate(input)
@@ -38,13 +38,11 @@ class Repl
   end
 
   def evaluate(input)
-    begin
-      expression = interpreter.eval(input)
-    rescue LispError => e
-      warn e
-    ensure
-      print_expression(expression)
-    end
+    expression = interpreter.eval(input)
+  rescue LispError => e
+    warn e
+  ensure
+    print_expression(expression)
   end
 
   def print_expression(expression)
@@ -59,7 +57,7 @@ class Repl
     system('stty', stty_save)
     exit
   end
-  
+
   def readline_with_history
     input = Readline.readline(prompt, true)
     hist = Readline::HISTORY
